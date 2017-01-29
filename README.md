@@ -1,7 +1,7 @@
 Tagger
 ==================
 
-A small pos tagger for instructional purposes 
+A small tagger and classification library for instructional purposes 
 
 Quick Start 
 -----------------
@@ -9,4 +9,3 @@ Quick Start
 To run tagger, envoke: 
 
     ./run.sh [options]
-    
