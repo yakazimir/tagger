@@ -15,8 +15,10 @@ GROUPS = {
     "tagger.Learner"   : "Handles Learning Models",
     "tagger.Optimizer" : "Handles Optimization Procedures",
     "tagger.Feature"   : "Handles Feature Representations",
+    "tagger.Tagger"    : "Hander tagger implementations",
     "General"          : "General tagger settings",
 }
+
 
 CONFIG_P = OptionParser(usage=USAGE,description=description)
 
