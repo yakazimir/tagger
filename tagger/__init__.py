@@ -15,4 +15,3 @@ __version__ = "0.1"
 description = """
 Tagger: a python library for text tagging
 """
-

@@ -1,6 +1,8 @@
+from optparse import OptionParser,OptionGroup
+from BaseClass import TaggerSerializable
 
 
-class OptimizerBase(object):
+class OptimizerBase(TaggerSerializable):
     """Base class for optimization procedure"""
     
     def optimize(self,dataset):
@@ -61,3 +63,26 @@ def Optimizer(otype):
     :param otype: the optimizer type 
     """
     pass
+
+
+#### SETTINGS
+
+def params(config):
+    """Loads dataset settings into a configuration
+
+    :param config: the configuration
+    :rtype: None  
+    """
+    group = OptionGroup(config,"tagger.Optimizer","Optimization settings")
+    
+    group.add_option(
+        "--iters",dest="iters",default=10,
+        help="The number of iterations [default='10']"
+    )
+
+    group.add_option(
+    "--optimizer",dest="optimizer",default="online",
+    help="The type of optimization to use [default='online']'"
+    )
+
+    config.add_option_group(group)

@@ -1,4 +1,7 @@
-## put all functions here related to learning
+# -*- coding: utf-8 -*-
+
+import sys
+from optparse import OptionParser,OptionGroup
 
 __all__ = ["PerceptronLearner"]
 
@@ -7,7 +10,7 @@ class LearnerBase(object):
     """Base class for learners"""
     pass
 
-### LINEAR MODELS 
+### LINEAR MODELS
 
 class LinearLearner(LearnerBase):
     """Linear linear implementation"""
@@ -57,3 +60,21 @@ def Learner(ltype):
     :param ltype: the type of learner desired 
     """
     pass
+
+
+## SETTINGS
+
+def params(config):
+    """Loads dataset settings into a configuration
+
+    :param config: the configuration
+    :rtype: None  
+    """
+    group = OptionGroup(config,"tagger.Learner","Learner and Model settings")
+    
+    group.add_option(
+        "--learner",dest="learner",default="perceptron",
+        help="The type of learner [default='perceptron']"
+    )
+
+    config.add_option_group(group)

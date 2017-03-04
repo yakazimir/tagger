@@ -1,9 +1,12 @@
 import logging 
-import gzip 
+import gzip
+import pickle
 import traceback
 
-class TaggerClass(object):
+class TaggerBase(object):
 
+    """Tagger base class"""
+    
     class TaggerError(Exception):
         """An exception class for TaggerClass runtime errors"""
 
@@ -12,7 +15,7 @@ class TaggerClass(object):
 
             :param msg: the error message 
             :param error: the raises error 
-            :param logger: 
+            :param logger: an optional instance logger
             """
             pass
 
@@ -25,6 +28,24 @@ class TaggerClass(object):
         """
         raise NotImplementedError
 
+
+class TaggerLoggable(TaggerBase):
+    
+    """A tagger class that has a logger instance"""
+    
+    @property
+    def logger(self):
+        """A logger for tagger class instance 
+
+        :returns: logger instance 
+        """
+        level = '.'.join([__name__,type(self).__name__])
+        return logging.getLogger(level)
+
+class TaggerSerializable(TaggerLoggable):
+    
+    """A tagger class that allows for serialization via pickle"""
+
     @classmethod
     def load(cls,path):
         """Load a pickled instance of class
@@ -33,19 +54,19 @@ class TaggerClass(object):
         :type path: basestring 
         :returns: a class instance 
         """
-        pass
-
-    def dump(self):
-        """Make a pickled backup of the class instance 
+        out_path = path if ".gz" in path else path+".gz"
         
+        with gzip.open(out_path,'rb') as my_instance:
+            return pickle.load(my_instance)
+
+    def dump(self,path):
+        """Make a pickled backup of the class instance 
+
+        :param path: the path to put pickled item 
         :rtype: None 
         """
-        pass
-    
-    @property
-    def logger(self):
-        """A logger for tagger class instance 
+        self.logger.info('Pickling the instance...')
+        out_path = path if ".gz" in path else path+".gz"
 
-        :returns: logger instance 
-        """
-        pass
+        with gzip.open(out_path,'wb') as my_pickle:
+            pickle.dump(self,out_path)
