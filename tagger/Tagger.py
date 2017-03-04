@@ -1,26 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from tagger.BaseClass iport TaggerClass
+from tagger.BaseClass import TaggerSerializable
 
 
-class TaggerBase(TaggerClass):
+class TaggerBase(TaggerSerializable):
     
     """Base class for statistical taggers"""
 
     pass
 
-
 class GreedyTagger(TaggerBase):
     
     """Greedy tagger implementations"""
-
     pass
-
-
 
 
 def main(config):
     """main the """
-    pass 
-
-
+    pass
