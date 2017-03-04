@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys 
-from optparse import OptionParser,OptionGroup
+from optparse import OptionGroup
 from tagger import global_config
 
 GENERAL_G = OptionGroup(global_config,"Tagger.__main__")
