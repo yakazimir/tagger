@@ -26,7 +26,7 @@ class TaggerBase(object):
         :param config: the tagger configuration object 
         :returns: TaggerClass instance 
         """
-        raise NotImplementedError
+        raise NotImplementedError('Configuration setup not implemented!')
 
 
 class TaggerLoggable(TaggerBase):

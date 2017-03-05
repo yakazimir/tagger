@@ -30,12 +30,13 @@ class OnlineOptimizer(OptimizerBase):
 
         :param model: a model to use 
         :type model: subclass of LearnerBase
+        :param extractor: the feature extractor 
         """
         self.model = model
         self.extractor = extractor
         self.iterations = iterations
 
-    def optimize(self,dataset):
+    def optimize(self,dataset,validation=None):
         """Main method for optimizing or fitting model using online updates 
 
         -- ``Online`` here means that the updates to the model are made
@@ -43,6 +44,8 @@ class OnlineOptimizer(OptimizerBase):
 
         :param dataset: the data used to fit the data
         :type dataset: subclass of DatasetBase
+        :param validation: a validation dataset 
+        :type validation: None or subclass of DatasetBase
         """
         ## start a new iteration 
         for epoch in self.iterations:
@@ -52,7 +55,8 @@ class OnlineOptimizer(OptimizerBase):
 
             ## go through your data 
             for data_instance in dataset:
-                pass
+                
+                self.logger.warning('Online learning loop not implemented, doing nothing!')
                 #features = self.extractor.extract(data_instance)
                 #self.model.online_update(features)
 
@@ -66,7 +70,15 @@ class OnlineOptimizer(OptimizerBase):
         :param dataset: the dataset to test the model on 
         :type dataset: subclass of DatasetBase 
         """
-        raise NotImplementedError
+        raise NotImplementedError('Optimizer test not implemented yet!')
+
+    @classmethod
+    def from_config(cls,config):
+        """Setup an online optimizer instance 
+
+        :param config: the main configuration 
+        """
+        pass
 
 ### Factory method 
     
@@ -78,9 +90,23 @@ def Optimizer(otype):
     """Factory method for creating optimizer instance 
 
     :param otype: the optimizer type 
+    :raises: ValueError 
     """
-    pass
+    if otype not in OPTIMIZERS:
+        raise ValueError('Unknown optimizer type: %s' % otype)
+    return OPTIMIZERS[otype]
 
+def setup_optimizer(config):
+    """Setups up an optimizer from configuration
+
+    :param config: the main configuration
+    """
+    optimizer_class = Optimizer(config.optimizer)
+
+    ## setup the optimizer given settings 
+    optimizer = optimizer_class.from_config(config)
+    return optimizer
+    
 
 #### SETTINGS
 
@@ -109,7 +135,3 @@ def params(config):
     
     config.add_option_group(group)
 
-## MAIN EXECUTION ENTRY POINT
-
-def run_tagger(config):
-    pass

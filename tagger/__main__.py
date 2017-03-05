@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import traceback 
 import sys 
 from optparse import OptionGroup
 from tagger import global_config
+from tagger.Tagger import run_tagger 
 
 GENERAL_G = OptionGroup(global_config,"Tagger.__main__")
 
@@ -21,6 +23,12 @@ global_config.add_option_group(GENERAL_G)
 ### this is the main execution point when calling the tagger module
 
 if __name__ == "__main__":
-
+    
     ## parses the command line arguments 
     config,_ = global_config.parse_args(sys.argv[1:])
+
+    ## tries to run a tagger
+    try: 
+        run_tagger(config)
+    except Exception,e:
+        traceback.print_exc(file=sys.stdout)
