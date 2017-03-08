@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import sys
+from BaseClass import TaggerSerializable
 from optparse import OptionParser,OptionGroup
 
 __all__ = ["PerceptronLearner"]
 
-
-class LearnerBase(object):
+class LearnerBase(TaggerSerializable):
     """Base class for learners"""
     pass
+
 
 ### LINEAR MODELS
 
@@ -24,7 +25,6 @@ class LinearLearner(LearnerBase):
 
     def score(self,features):
         """Score an input feature representation 
-
 
         :param features 
         """
@@ -48,6 +48,43 @@ class PerceptronLearner(LinearLearner):
         """
         pass
 
+### baseline learners
+
+class MajorityLearner(LinearLearner):
+    """A majority learner class"""
+
+    def update(self,features):
+        """Perform online update during training 
+
+        :param features: the target features 
+        """
+        raise NotImplementedError
+
+    def score(self,features):
+        """Score an input feature representation 
+
+
+        :param features 
+        """
+        raise NotImplementedError
+
+class HeuristicLearner(LinearLearner):
+    """A Learner that uses a single or few heuristic to learn"""
+
+    def update(self,features):
+        """Perform online update during training 
+
+        :param features: the target features 
+        """
+        raise NotImplementedError
+
+    def score(self,features):
+        """Score an input feature representation 
+
+        :param features 
+        """
+        raise NotImplementedError
+
 ### Factory method
 
 LEARNERS = {
@@ -58,9 +95,12 @@ def Learner(ltype):
     """Factory method for giving back a learner 
 
     :param ltype: the type of learner desired 
+    :raises: ValueError
     """
-    pass
-
+    lclass = LEARNERS.get(ltype,None)
+    if not lclass:
+        raise ValueError('Learner type not known: %s' % lclass)
+    return lclass
 
 ## SETTINGS
 

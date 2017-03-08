@@ -25,6 +25,7 @@ from tagger.Dataset   import params as data_params
 from tagger.Learner   import params as learn_params
 from tagger.Optimizer import params as opt_params
 from tagger.Tagger    import params as tag_params
+from tagger.Feature   import params as feat_params
 
 global_config = OptionParser(usage=USAGE,description=description)
 
@@ -33,3 +34,6 @@ data_params  (global_config)
 learn_params (global_config)
 opt_params   (global_config)
 tag_params   (global_config)
+feat_params  (global_config)
+
+default_config,_ = global_config.parse_args([])

@@ -31,7 +31,6 @@ class SimpleTagger(TaggerBase):
     def __init__(self,optimizer):
         """Creates a simple tagger instance 
 
-
         :param optimizer: the optimizer to use 
         """
         self.optimizer = optimizer
@@ -119,5 +118,20 @@ def params(config):
         "--ttype",dest="ttype",default='SimpleTagger',
         help="The type of tagger to use [default='SimpleTagger']"
     )
-    
+
+    group.add_option(
+        "--evaluate_train",dest="evaluate_train",default=False,
+        help="Test model on training data [default=False]"
+    )
+
+    group.add_option(
+        "--evaluate_test",dest="evaluate_test",default=False,
+        help="Test model on testing data [default=False]"
+    )
+
+    group.add_option(
+        "--evaluate_valid",dest="evaluate_valid",default=False,
+        help="Test model on validation data [default=False]"
+    )
+
     config.add_option_group(group)
