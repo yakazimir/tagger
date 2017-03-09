@@ -1,13 +1,18 @@
 import os
 import sys
 import codecs
+import logging
+from shutil import rmtree
 
 ## put all utility functions here
 
 __all__ = [
-    "build_text_data",    
+    "build_text_data",
+    "create_wdir",
 ]
 
+util_logger = logging.getLogger("tagger.util")
+    
 def __find_path(ddir,dtype):
     """Return the data path
 
@@ -42,6 +47,23 @@ def build_text_data(config,dtype):
 
     return (text,labels)
 
+def create_wdir(config):
+    """Create a working directory
+
+    :param config: the main configuration 
+    """
+    path = config.dir
+
+    if not path:
+        raise ValueError('Must specify a working path!')
+        
+    if os.path.isdir(path) and not config.override:
+        raise ValueError(
+            'directory already exists, use --override option: %s'
+            % path)
+    elif os.path.isdir(directory): 
+        rmtree(path)
+    os.makedirs(path)
 
 
 if __name__ == "__main__":

@@ -34,6 +34,11 @@ class TextData(DatasetBase):
     >>> for instance in t: print t
     ("first text","label1") 
     ("second text","label2") 
+    >>> nt = TextData([],["label1"])
+    TaggerError
+    Traceback (most recent call last)
+    ...
+    TaggerError: TAGGER RUNTIME ERROR: Mismatched text/label data!
 
     """
 
@@ -48,9 +53,15 @@ class TextData(DatasetBase):
         self.labels  = labels
         self.shuffle = shuffle
         self._size   = len(text)
+
+        ## check that datasets are the same size
+        if len(text) != len(labels):
+            raise TextData.TaggerError('Mismatched text/label data!',self.logger)
         
     def __iter__(self):
-        ## implements an iterator 
+        ## implements an iterator
+
+        ## set a seed for randomization so you can reproduce the shuffle
         random.seed(10)
         indices = range(self._size)
         if self.shuffle: random.shuffle(indices)
@@ -143,7 +154,6 @@ def params(config):
         "--encoding",dest="encoding",default="utf-8",
         help="The main encoding [default='utf-8']'"
     )
-
 
     group.add_option(
         "--lower",dest="lower",default=True,

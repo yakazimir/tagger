@@ -22,6 +22,7 @@ class FeatureExtractor(TaggerSerializable):
         """
         raise NotImplementedError
 
+
     
 ## SETTINGS
 
@@ -37,7 +38,5 @@ def params(config):
         "--extractor",dest="extractor",default="",
         help="The type of feature extractor to use [default='']"
     )
-
-    config.add_option_group(group)
-
     
+    config.add_option_group(group)

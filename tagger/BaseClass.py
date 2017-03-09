@@ -10,14 +10,15 @@ class TaggerBase(object):
     class TaggerError(Exception):
         """An exception class for TaggerClass runtime errors"""
 
-        def __init__(self,msg,error,logger=None):
+        def __init__(self,msg,logger=None):
             """
 
             :param msg: the error message 
-            :param error: the raises error 
             :param logger: an optional instance logger
             """
-            pass
+            nmsg = "TAGGER RUNTIME ERROR: %s" % msg
+            Exception.__init__(self,nmsg) 
+            if logger: logger.error(nmsg)
 
     @classmethod
     def from_config(cls,config):

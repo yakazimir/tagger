@@ -92,7 +92,7 @@ def run_tagger(config):
     desired_action = config.action 
 
     ## train a tagger model
-    if desired_action != 'train_tagger':
+    if desired_action == 'train_tagger':
 
         ## find the type of tagger to use 
         tagger_class = Tagger(config)
