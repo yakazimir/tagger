@@ -10,7 +10,6 @@ class LearnerBase(TaggerSerializable):
     """Base class for learners"""
     pass
 
-
 ### LINEAR MODELS
 
 class LinearLearner(LearnerBase):
@@ -30,8 +29,35 @@ class LinearLearner(LearnerBase):
         """
         raise NotImplementedError
 
+    @classmethod
+    def from_features(cls,feature_map):
+        """Loads a model from an existing list of features
+
+        :param feature_map: the feature list 
+        :returns: a PerceptronInstance 
+        """
+        raise NotImplementedError 
+        
+    @classmethod
+    def from_config(cls,config):
+        """Load a learning model from configuration
+
+        :param config: the configuration
+        :returns: a PerceptronLearner instance
+        """
+        raise ValueError('Use from_features, config init not supported')
+
+
 class PerceptronLearner(LinearLearner):
+    
     """Implementation of the perceptron learner"""
+
+    def __init__(self,weights):
+        """Create a perceptron learner instance 
+
+        :param weights: weights associated with features
+        """
+        self.weights     = weights
 
     def update(self,features):
         """Performs the perceptron update rule 
@@ -48,6 +74,17 @@ class PerceptronLearner(LinearLearner):
         """
         pass
 
+    @classmethod
+    def from_features(cls,feature_map):
+        """Loads a model from an existing list of features
+
+        :param feature_map: the feature list 
+        :returns: a PerceptronInstance 
+        """
+        ## initialize all weights to zero
+        weights = {i:0.0 for i in feature_map.values()}
+        return cls(weights)
+    
 ### baseline learners
 
 class MajorityLearner(LinearLearner):
@@ -63,8 +100,7 @@ class MajorityLearner(LinearLearner):
     def score(self,features):
         """Score an input feature representation 
 
-
-        :param features 
+        :param features: the features to score 
         """
         raise NotImplementedError
 
@@ -102,6 +138,16 @@ def Learner(ltype):
         raise ValueError('Learner type not known: %s' % lclass)
     return lclass
 
+def setup_learner(config):
+    """Returns a learner instance from config
+    
+    :param config: the main configuration 
+    :raises: ValueError
+    """
+    ltype = Learner(config.learner)
+    return ltype.from_config(config)
+    
+    
 ## SETTINGS
 
 def params(config):

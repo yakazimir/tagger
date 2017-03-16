@@ -22,7 +22,43 @@ class FeatureExtractor(TaggerSerializable):
         """
         raise NotImplementedError
 
+    @classmethod
+    def init_features(cls,config,dataset):
+        """Create class instance and init features from dataset
 
+        :param config: the configuration 
+        :param dataset: the dataset to extract features from
+        """
+        raise NotImplementedError
+
+    @classmethod
+    def from_config(cls,config):
+        """Set up the feature extractor, find basic features
+
+        :param config: the main configuration 
+        """
+        raise ValueError('Config init not supported for FeatureExtractors!')
+
+class NameFeatureExtractor(FeatureExtractor):
+    """Feature extractor for getting name features and name classification"""
+
+    def __init__(self,feature_map):
+        """Ceates a NameFeatureExtractor instance
+
+        :param features: Feature map for mapping features types to identifiers
+        """
+        self.feature_map = feature_map
+
+    @classmethod
+    def init_features(cls,config,dataset):
+        """Create class instance and init features from dataset
+
+        :param config: the configuration 
+        :param dataset: the dataset to extract features from
+        """
+        extractor = cls.({})
+        extractor.logger.warning('No features!')
+        return extractor 
     
 ## SETTINGS
 

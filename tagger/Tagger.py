@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from optparse import OptionParser,OptionGroup
+from optparse         import OptionParser,OptionGroup
 from tagger.BaseClass import TaggerSerializable
-from Optimizer import setup_optimizer
+from tagger.Dataset   import setup_dataset
+from Optimizer        import setup_optimizer
 
 class TaggerBase(TaggerSerializable):
     
@@ -41,7 +42,7 @@ class SimpleTagger(TaggerBase):
         :param config: the overall tagger configuration
         :rtype: None 
         """
-        # dataset = 
+        dataset = setup_dataset(config,'train')
         #self.optimizer.optimize()
 
     def test(self,config):
@@ -62,7 +63,6 @@ class SimpleTagger(TaggerBase):
 class SequenceTagger(TaggerBase):
     pass
 
-
 ## factory method
 
 TAGGERS = {
@@ -76,11 +76,11 @@ def Tagger(config):
     :param config: the tagger configuration 
     :raises: ValueError
     """
-    ttype = config.ttype
+    ttype = TAGGERS.get(config.ttype,None)
 
-    if ttype not in TAGGERS:
+    if not ttype:
         raise ValueError('Unknown tagger type: %s' % ttype)
-    return TAGGERS[ttype]
+    return ttype
 
 ## MAIN EXECUTION ENTRY POINT
 
@@ -99,6 +99,8 @@ def run_tagger(config):
 
         ## create a tagger instance 
         tagger = tagger_class.from_config(config)
+        ## train it
+        tagger.train(config)
 
     else:
         raise NotImplementedError('Tagger action not implemented! %s' % desired_action)

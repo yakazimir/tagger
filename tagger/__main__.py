@@ -2,6 +2,7 @@
 
 import traceback 
 import sys
+import os
 import logging
 from optparse import OptionGroup
 from tagger import global_config
@@ -40,9 +41,11 @@ if __name__ == "__main__":
     config,_ = global_config.parse_args(sys.argv[1:])
 
     try: 
-        ## setup up logger and/or output directory
+        ## setup up logger and experiment directory
         if config.dir:
-            create_wdir(config) 
+            log_file = os.path.join(config.dir,"experiment.log")
+            logging.basicConfig(filename=log_file,level=logging.INFO)
+            create_wdir(config)
         else:
             logging.basicConfig(level=logging.INFO)
 

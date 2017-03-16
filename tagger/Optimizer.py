@@ -1,7 +1,7 @@
 import time
 from optparse import OptionParser,OptionGroup
 from BaseClass import TaggerSerializable
-
+from Learner   import setup_learner
 
 class OptimizerBase(TaggerSerializable):
     """Base class for optimization procedure"""
@@ -58,7 +58,7 @@ class OnlineOptimizer(OptimizerBase):
                 
                 self.logger.warning('Online learning loop not implemented, doing nothing!')
                 #features = self.extractor.extract(data_instance)
-                #self.model.online_update(features)
+                #self.model.update(features)
 
             ## log iteration information 
             self.logger.info('Finished iteration %d in %s seconds' %\
@@ -78,9 +78,14 @@ class OnlineOptimizer(OptimizerBase):
 
         :param config: the main configuration 
         """
-        pass
+        learner = setup_learner(config)
+        
 
-### Factory method 
+class BatchOptimizer(OptimizerBase):
+    """Class for batch training"""
+    pass
+
+### Factory method
     
 OPTIMIZERS = {
     "online" : OnlineOptimizer,

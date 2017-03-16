@@ -61,10 +61,9 @@ def create_wdir(config):
         raise ValueError(
             'directory already exists, use --override option: %s'
             % path)
-    elif os.path.isdir(directory): 
+    elif os.path.isdir(path): 
         rmtree(path)
     os.makedirs(path)
-
 
 if __name__ == "__main__":
     pass
