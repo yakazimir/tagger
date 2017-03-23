@@ -18,7 +18,6 @@ Tagger: a python library for text tagging
 
 USAGE = """usage: python -m tagger [options] [--help]"""
 
-
 ## creates a configuration from different sub modules
 from optparse import OptionParser,OptionGroup
 from tagger.Dataset   import params as data_params
@@ -39,3 +38,8 @@ feat_params  (global_config)
 
 ## default configuration settings
 default_config,_ = global_config.parse_args([])
+
+## library location
+import os
+src_loc = os.path.os.path.abspath(os.path.dirname(__file__))
+lib_loc = os.path.abspath(os.path.join(src_loc,"../"))

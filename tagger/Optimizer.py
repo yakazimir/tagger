@@ -1,7 +1,10 @@
 import time
 from optparse import OptionParser,OptionGroup
-from BaseClass import TaggerSerializable
-from Learner   import setup_learner
+from tagger.BaseClass import TaggerSerializable
+from tagger.Learner   import setup_learner
+from tagger.Feature   import setup_extractor
+from tagger.Dataset   import setup_dataset
+
 
 class OptimizerBase(TaggerSerializable):
     """Base class for optimization procedure"""
@@ -48,18 +51,18 @@ class OnlineOptimizer(OptimizerBase):
         :type validation: None or subclass of DatasetBase
         """
         ## start a new iteration 
-        for epoch in self.iterations:
+        for epoch in range(self.iterations):
             
             ## start a counter 
             start_time = time.time()
+            self.logger.warning('Nothing implemented for epoch')
 
             ## go through your data 
             for data_instance in dataset:
-                
-                self.logger.warning('Online learning loop not implemented, doing nothing!')
+                pass 
+                #self.logger.warning('Online learning loop not implemented, doing nothing!')
                 #features = self.extractor.extract(data_instance)
                 #self.model.update(features)
-
             ## log iteration information 
             self.logger.info('Finished iteration %d in %s seconds' %\
                                  (epoch,time.time()-start_time))
@@ -78,8 +81,11 @@ class OnlineOptimizer(OptimizerBase):
 
         :param config: the main configuration 
         """
-        learner = setup_learner(config)
-        
+        train = setup_dataset(config,'train')
+        extractor = setup_extractor(config,train)
+        learner = setup_learner(config,extractor.feature_map)
+
+        return cls(learner,extractor,config.iters)
 
 class BatchOptimizer(OptimizerBase):
     """Class for batch training"""

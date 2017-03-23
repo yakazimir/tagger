@@ -27,30 +27,61 @@ GENERAL_G.add_option(
 )
 
 GENERAL_G.add_option(
-    "--backup",dest="backup",default=False,
-    help="Backup models/information when possible [default=False]"
+    "--debug",dest="debug",default='info',
+    help="Set the debug level [default='info']"
 )
+
+LEVELS = {
+    "info"    : logging.INFO,
+    "debug"   : logging.DEBUG,
+    "error"   : logging.ERROR,
+    "warning" : logging.WARNING,
+}
 
 global_config.add_option_group(GENERAL_G)
 
-### this is the main execution point when calling the tagger module
+module_logger = logging.getLogger("tagger.__main__")
 
+def setup_wdir(config,sysarg,level):
+    """Setup a working directory for storing experiment files/runs as
+    well as the logging information.
+
+    :param config: the main configuration 
+    :param sysarg: cli input to the module 
+    :param level: the logging level
+    :rtype: None 
+    """
+    ## create the working directory
+    create_wdir(config)
+    create_run_script(sysarg,config)
+
+    ## setting the logger 
+    log_file  = os.path.join(config.dir,"experiment.log")
+    logging.basicConfig(filename=log_file,level=level)
+
+### this is the main execution point when calling the tagger module
 if __name__ == "__main__":
-    
+
     ## parses the command line arguments 
     config,_ = global_config.parse_args(sys.argv[1:])
 
-    try: 
+    try:
+
+        log_level = LEVELS.get(config.debug,logging.INFO)
+        
         ## setup up logger and experiment directory
         if config.dir:
-            log_file = os.path.join(config.dir,"experiment.log")
-            logging.basicConfig(filename=log_file,level=logging.INFO)
-            create_wdir(config)
+            setup_wdir(config,sys.argv[1:],log_level)
         else:
-            logging.basicConfig(level=logging.INFO)
+            logging.basicConfig(level=log_level)
 
         ## tries to run a tagger
         run_tagger(config)
         
     except Exception,e:
+        module_logger.error(e,exc_info=True)
         traceback.print_exc(file=sys.stdout)
+
+    ## backup the configuration 
+    finally:
+        pass

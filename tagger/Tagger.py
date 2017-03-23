@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import sys
+import os
+import traceback
 from optparse         import OptionParser,OptionGroup
 from tagger.BaseClass import TaggerSerializable
 from tagger.Dataset   import setup_dataset
-from Optimizer        import setup_optimizer
+from tagger.Optimizer        import setup_optimizer
 
 class TaggerBase(TaggerSerializable):
     
@@ -17,7 +20,7 @@ class TaggerBase(TaggerSerializable):
         """
         raise NotImplementedError 
 
-    def test(self,configr):
+    def test(self,config):
         """Test the tagger model 
 
         :param config: the overall tagger configuration
@@ -43,7 +46,7 @@ class SimpleTagger(TaggerBase):
         :rtype: None 
         """
         dataset = setup_dataset(config,'train')
-        #self.optimizer.optimize()
+        self.optimizer.optimize(dataset)
 
     def test(self,config):
         """Test the tagger model 
@@ -58,7 +61,8 @@ class SimpleTagger(TaggerBase):
 
         :param config: the main configuration 
         """
-        pass
+        optimizer = setup_optimizer(config)
+        return cls(optimizer)
 
 class SequenceTagger(TaggerBase):
     pass
@@ -92,20 +96,37 @@ def run_tagger(config):
     desired_action = config.action 
 
     ## train a tagger model
-    if desired_action == 'train_tagger':
 
-        ## find the type of tagger to use 
-        tagger_class = Tagger(config)
+    try: 
+        if desired_action == 'train_tagger':
+            
+            ## find the type of tagger to use 
+            tagger_class = Tagger(config)
 
-        ## create a tagger instance 
-        tagger = tagger_class.from_config(config)
-        ## train it
-        tagger.train(config)
+            ## create a tagger instance 
+            tagger = tagger_class.from_config(config)
+            ## train it
+            tagger.train(config)
 
-    else:
-        raise NotImplementedError('Tagger action not implemented! %s' % desired_action)
+        elif desired_action == 'test_tagger':
+            raise NotImplementedError('TESTER: Implement me!!')
+    
+        else:
+            raise NotImplementedError('Tagger action not implemented! %s' % desired_action)
 
+
+    except Exception:
+        traceback.print_exc(file=sys.stdout)
+    finally:
+        try:
+            if config.dir:
+                tagger_loc = os.path.join(config.dir,"tagger.p")
+                tagger.dump(tagger_loc)
+        except:
+            pass 
+        
 ### SETTINGS
+
 
 
 def params(config):

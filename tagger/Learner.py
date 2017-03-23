@@ -83,7 +83,9 @@ class PerceptronLearner(LinearLearner):
         """
         ## initialize all weights to zero
         weights = {i:0.0 for i in feature_map.values()}
-        return cls(weights)
+        model = cls(weights)
+        model.logger.warning('Model has no features!!!')
+        return model
     
 ### baseline learners
 
@@ -138,15 +140,15 @@ def Learner(ltype):
         raise ValueError('Learner type not known: %s' % lclass)
     return lclass
 
-def setup_learner(config):
+def setup_learner(config,features):
     """Returns a learner instance from config
     
     :param config: the main configuration 
+    :param features: the map of features
     :raises: ValueError
     """
     ltype = Learner(config.learner)
-    return ltype.from_config(config)
-    
+    return ltype.from_features(features)
     
 ## SETTINGS
 

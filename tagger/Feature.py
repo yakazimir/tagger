@@ -56,9 +56,72 @@ class NameFeatureExtractor(FeatureExtractor):
         :param config: the configuration 
         :param dataset: the dataset to extract features from
         """
-        extractor = cls.({})
+        #### IMPLEMENT HERE
+        #feature_map = find_name_features(dataset)
+        #return cls(feature_map)
+
+        ## TEMPORARY
+        extractor = cls({})
         extractor.logger.warning('No features!')
-        return extractor 
+        return extractor
+
+    @property
+    def num_features(self):
+        """Information about the number of features 
+
+        :rtype: ine
+        """
+        return len(self.feature_map)
+
+## types
+
+EXTRACTORS = {
+    "names" : NameFeatureExtractor,
+}
+
+def Extractor(etype):
+    """The class of extractor to use 
+
+    :param etype: the extractor type 
+    """
+    e = EXTRACTORS.get(etype,None)
+    if not e:
+        raise ValueError('Unknown extractor: %s' % e)
+    return e
+    
+def setup_extractor(config,dataset):
+    """Setup the feature extractor 
+
+    :param config: the main configuration 
+    :param dataset: the dataset to use to extract features
+    """
+    eclass = Extractor(config.extractor)
+    return eclass.init_features(config,dataset)
+
+## EXTRACTOR SPECIFIC FUNCTIONS
+
+def find_name_features(dataset):
+    """Find the different features in train data
+
+    :param dataset: the training dataset
+    :rtype: dict
+    :returns: a map of features with values
+    """
+    features = {}
+    
+    for (text,label) in dataset:
+
+        ## feature template 1
+
+        ## features template 2
+
+        ## 
+        pass
+
+    return features
+
+def extract_name_features(instance):
+    pass
     
 ## SETTINGS
 
@@ -71,8 +134,13 @@ def params(config):
     group = OptionGroup(config,"tagger.Feature","Feature Extractor Settings")
 
     group.add_option(
-        "--extractor",dest="extractor",default="",
+        "--extractor",dest="extractor",default="names",
         help="The type of feature extractor to use [default='']"
     )
-    
+
+    group.add_option(
+        "--templates",dest="templates",default="",
+        help="The type of templates to use [default='']"
+    )
+
     config.add_option_group(group)

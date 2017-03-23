@@ -2,6 +2,7 @@ import os
 import sys
 import codecs
 import logging
+import subprocess
 from shutil import rmtree
 
 ## put all utility functions here
@@ -9,6 +10,7 @@ from shutil import rmtree
 __all__ = [
     "build_text_data",
     "create_wdir",
+    "create_run_script",
 ]
 
 util_logger = logging.getLogger("tagger.util")
@@ -37,7 +39,7 @@ def build_text_data(config,dtype):
     path = __find_path(config.loc,dtype)
     encoding = 'utf-8' if not config.encoding else config.encoding
     text = []; labels = [] 
-
+    
     with codecs.open(path,encoding=encoding) as my_data:
         for line in my_data:
             line = line.strip()
@@ -64,6 +66,22 @@ def create_wdir(config):
     elif os.path.isdir(path): 
         rmtree(path)
     os.makedirs(path)
+
+def create_run_script(argv,config):
+    """Generate a run script for repeating experiment 
+    
+    :param argv: the cli input 
+    :param config: the main configuration
+    :rtype: None 
+    """
+    from tagger import lib_loc
+
+    run_path = os.path.join(config.dir,"run.sh")
+    with open(run_path,'w') as run_script:
+        print >>run_script, "cd %s\n./run.sh %s" % (lib_loc,' '.join(argv))
+
+    ## give permissions to run script
+    subprocess.call(['chmod', '755', run_path])
 
 if __name__ == "__main__":
     pass
