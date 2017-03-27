@@ -41,11 +41,15 @@ def build_text_data(config,dtype):
     text = []; labels = [] 
     
     with codecs.open(path,encoding=encoding) as my_data:
-        for line in my_data:
+        for k,line in enumerate(my_data):
             line = line.strip()
-            name,label = line.split('\t')
-            text.append(name.strip())
-            labels.append(label)
+
+            try: 
+                name,label = line.split('\t')
+                text.append(name.strip())
+                labels.append(label)
+            except:
+                raise ValueError('Encountered error at line %d: %s' % (k,line))
 
     return (text,labels)
 
