@@ -82,7 +82,7 @@ def create_run_script(argv,config):
 
     run_path = os.path.join(config.dir,"run.sh")
     with open(run_path,'w') as run_script:
-        print >>run_script, "cd %s\n./run.sh %s" % (lib_loc,' '.join(argv))
+        print >>run_script, "cd %s\n./run.sh %s --override=true" % (lib_loc,' '.join(argv))
 
     ## give permissions to run script
     subprocess.call(['chmod', '755', run_path])
