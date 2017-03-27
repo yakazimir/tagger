@@ -57,7 +57,7 @@ class NameFeatureExtractor(FeatureExtractor):
         :param dataset: the dataset to extract features from
         """
         #### IMPLEMENT HERE
-        #feature_map = find_name_features(dataset)
+        feature_map = find_name_features(dataset)
         #return cls(feature_map)
 
         ## TEMPORARY
@@ -103,22 +103,72 @@ def setup_extractor(config,dataset):
 def find_name_features(dataset):
     """Find the different features in train data
 
+    name input: Melanie 
+    features: 
+
+         first letter = 'm'        ("F",'m'),("F",'z')...
+         last letter  = 'e'        ("L","e").... 
+         last two letters = 'ie'
+         .... 
+
+    features = {
+
+    ("F",'m') => 0 
+    ("F",'z') => 1
+    .....
+
+    ("L","e") => j
+
+    .. => n
+    }
+        
+
     :param dataset: the training dataset
     :rtype: dict
     :returns: a map of features with values
     """
     features = {}
+    vowels = set(["a","e","i","o","u"])
+
     
     for (text,label) in dataset:
 
-        ## feature template 1
+        ## feature template 1 : FIRST LETTER FEATURE
+        first_letter = text[0]
+        identifier = ("F",first_letter)
 
-        ## features template 2
+        if identifier not in features:
+            features[identifier] = len(features)
 
-        ## 
-        pass
+        ## features template 2 : LAST LETTER FEATURE
+        last_letter = text[-1]
+        identifier = ("L",last_letter)
 
-    return features
+        if identifier not in features:
+            features[identifier] = len(features)
+
+
+        ## feature template 3:
+        num_vowels = len([c for c in text if c in vowels])
+
+        if num_vowels <= 0:
+            v_identifier = ("NV",)
+        if num_vowels >= 1:
+            v_identifier = (">=1",)
+        if num_vowels >= 5:
+            v_identifier = (">=5,",)
+
+        if v_identifier not in features: 
+            features[v_identifier] = len(features)
+        tv_identifier = ("Vow",num_vowels)
+        if tv_identifier not in features:
+            features[tv_identifier] = len(features)
+
+    print features
+    
+    return features 
+        
+
 
 def extract_name_features(instance):
     pass
