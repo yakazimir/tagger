@@ -55,14 +55,20 @@ class OnlineOptimizer(OptimizerBase):
             
             ## start a counter 
             start_time = time.time()
-            self.logger.warning('Nothing implemented for epoch')
 
             ## go through your data 
             for data_instance in dataset:
-                pass 
-                #self.logger.warning('Online learning loop not implemented, doing nothing!')
-                #features = self.extractor.extract(data_instance)
-                #self.model.update(features)
+                raw,gold = data_instance
+
+                ## input -> (Male, {features}), (Female,{features})
+                features = self.extractor.extract(data_instance)
+
+                ## features -> scores
+                prediction = self.model.score(features)
+
+                ## make the update based on prediction and correct answer
+                self.model.update(features,prediction,gold)
+
             ## log iteration information 
             self.logger.info('Finished iteration %d in %s seconds' %\
                                  (epoch,time.time()-start_time))
@@ -130,7 +136,7 @@ def params(config):
     group = OptionGroup(config,"tagger.Optimizer","Optimization settings")
     
     group.add_option(
-        "--iters",dest="iters",default=10,
+        "--iters",dest="iters",default=10,type=int,
         help="The number of iterations [default='10']"
     )
 

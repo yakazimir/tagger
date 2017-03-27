@@ -59,20 +59,52 @@ class PerceptronLearner(LinearLearner):
         """
         self.weights     = weights
 
-    def update(self,features):
+    def update(self,features,prediction,gold):
         """Performs the perceptron update rule 
 
         :param features: the feature representation
-        :rtype: None 
+        :param prediction: what the model currently thinks is correct
+        :param gold: the actually correct answer
+        :rtype: None
         """
-        raise NotImplementedError
+        if prediction == gold:
+            return
+
+        ## if not, go through feature and subtract one from "bad" features
+        totalfeatures = set()
+
+        ## what are all the features for all labels?
+        for fmap in features.values():
+            for featureid in fmap.keys():
+                totalfeatures.add(featureid)
+
+        # now the update
+        for feature_num in totalfeatures:
+            self.weights[feature_num] +=\
+                features[gold].get(feature_num,0.0) - features[prediction].get(feature_num,0.0)
+
+
+
+
+
+
+
 
     def score(self,features):
         """Score a set of candidates 
 
-        :param features: the input features 
+        :param features: the input features
+        :returns: label name with highest score
         """
-        pass
+        label_scores = {label:0.0 for label in features.keys()}
+
+        for (label,label_features) in features.iteritems():
+            for (feature_id,feature_count) in label_features.iteritems():
+                label_scores[label] += feature_count*self.weights[feature_id]
+
+        return max(label_scores, key=label_scores.get)
+
+
 
     @classmethod
     def from_features(cls,feature_map):
@@ -84,7 +116,6 @@ class PerceptronLearner(LinearLearner):
         ## initialize all weights to zero
         weights = {i:0.0 for i in feature_map.values()}
         model = cls(weights)
-        model.logger.warning('Model has no features!!!')
         return model
     
 ### baseline learners
