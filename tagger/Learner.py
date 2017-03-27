@@ -83,13 +83,6 @@ class PerceptronLearner(LinearLearner):
             self.weights[feature_num] +=\
                 features[gold].get(feature_num,0.0) - features[prediction].get(feature_num,0.0)
 
-
-
-
-
-
-
-
     def score(self,features):
         """Score a set of candidates 
 
@@ -103,8 +96,6 @@ class PerceptronLearner(LinearLearner):
                 label_scores[label] += feature_count*self.weights[feature_id]
 
         return max(label_scores, key=label_scores.get)
-
-
 
     @classmethod
     def from_features(cls,feature_map):
