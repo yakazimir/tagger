@@ -27,7 +27,7 @@ GENERAL_G.add_option(
 )
 
 GENERAL_G.add_option(
-    "--debug",dest="debug",default='info',
+    "--log",dest="log",default='info',
     help="Set the debug level [default='info']"
 )
 
@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
     try:
 
-        log_level = LEVELS.get(config.debug,logging.INFO)
+        log_level = LEVELS.get(config.log,logging.INFO)
         
         ## setup up logger and experiment directory
         if config.dir:
