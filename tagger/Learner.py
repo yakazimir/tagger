@@ -48,6 +48,53 @@ class LinearLearner(LearnerBase):
         raise ValueError('Use from_features, config init not supported')
 
 
+class AveragePerceptronLearner(LinearLearner):
+
+    def __init__(self,weights):
+        """Create a perceptron learner instance
+
+           :param weights: weights associated with features
+           """
+        self.weights = weights
+        self.last_updates = {k:-1 for k,_ in enumerate(self.weights)}
+        self.sums = {k:0 for k,_ in enumerate(self.weights)}
+        self.number_of_updates = 0
+
+    def update(self,features,prediction,gold):
+
+        if prediction == gold:
+            return
+
+        totalfeatures = set()
+
+        for fmap in features.values():
+            for featureid in fmap.keys():
+                totalfeatures.add(featureid)
+
+        # now the update
+        for feature_num in totalfeatures:
+            self.weights[feature_num] +=\
+                features[gold].get(feature_num,0.0) - features[prediction].get(feature_num,0.0)
+            self.sums[feature_num] += features[feature_num]
+            self.number_of_updates += 1.
+
+    def score(self):
+        pass
+
+
+    @classmethod
+    def from_features(cls, feature_map):
+        """Loads a model from an existing list of features
+
+        :param feature_map: the feature list
+        :returns: a PerceptronInstance
+        """
+        ## initialize all weights to zero
+        weights = {i: 0.0 for i in feature_map.values()}
+        model = cls(weights)
+        return model
+
+
 class PerceptronLearner(LinearLearner):
     
     """Implementation of the perceptron learner"""

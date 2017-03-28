@@ -11,6 +11,7 @@ __all__ = [
     "build_text_data",
     "create_wdir",
     "create_run_script",
+    "print_train_info",
 ]
 
 util_logger = logging.getLogger("tagger.util")
@@ -86,6 +87,25 @@ def create_run_script(argv,config):
 
     ## give permissions to run script
     subprocess.call(['chmod', '755', run_path])
+
+
+def print_train_info(train_accuracy,dev_accuracy,wdir,last):
+    """Print information about the training after it is done
+
+
+    :param train_accuracy: how well did the model do on training data
+    :param dev_accuracy: how well on development set
+    :param wdir: the experiment directory path
+    :param last: the last number of iterations made before end or stopping
+    """
+    info_file_path = os.path.join(wdir,"train_info.txt")
+
+    with open(info_file_path,'w') as info:
+        print >>info, "NUMBER OF ITERATIONS: %d" % last
+        print >>info, "ACCURACY ON TRAIN SET: %f" % train_accuracy
+        print >>info, "ACCURACY ON DEV: %f" % dev_accuracy
+
+
 
 if __name__ == "__main__":
     pass

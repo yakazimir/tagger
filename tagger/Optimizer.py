@@ -1,9 +1,11 @@
 import time
+from copy import deepcopy
 from optparse import OptionParser,OptionGroup
 from tagger.BaseClass import TaggerSerializable
 from tagger.Learner   import setup_learner
 from tagger.Feature   import setup_extractor
 from tagger.Dataset   import setup_dataset
+from tagger.util import *
 
 
 class OptimizerBase(TaggerSerializable):
@@ -39,7 +41,8 @@ class OnlineOptimizer(OptimizerBase):
         self.extractor = extractor
         self.iterations = iterations
 
-    def optimize(self,dataset,validation=None):
+    def optimize(self,dataset,validation=None,wdir=None):
+
         """Main method for optimizing or fitting model using online updates 
 
         -- ``Online`` here means that the updates to the model are made
@@ -51,7 +54,9 @@ class OnlineOptimizer(OptimizerBase):
         :type validation: None or subclass of DatasetBase
         """
         last_update = 0
+        last_iteration = None
         last_accuracy = 0.
+        best_model = None
         ## start a new iteration 
         for epoch in range(self.iterations):
             
@@ -83,15 +88,25 @@ class OnlineOptimizer(OptimizerBase):
                 if dev_average > last_accuracy:
                     last_update = epoch
                     last_accuracy = dev_average
+
+                    best_model = deepcopy(self.model.weights)
                 elif (epoch - last_update) >= 10:
+                    last_iteration = epoch
+                    self.logger.info('Stopped early: current=%f, last prev. best=%f' % (dev_average,last_accuracy))
                     break
 
         ## test of the training data
         ##########
+        if best_model:
+            self.model.weights = best_model
+        if not last_iteration: last_iteration = epoch
 
         average = self.test(dataset)
         self.logger.info('Accuracy on training: %f' % average)
         ## test model (train, valid)
+
+        if wdir:
+            print_train_info(average,last_accuracy,wdir,last_iteration)
 
 
     def test_dataset(self,dataset):

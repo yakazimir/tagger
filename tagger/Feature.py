@@ -66,7 +66,7 @@ class NameFeatureExtractor(FeatureExtractor):
         :param dataset: the dataset to extract features from
         """
         #### IMPLEMENT HERE
-        feature_map = find_name_features(dataset)
+        feature_map = find_name_features(dataset,config.templates)
         return cls(feature_map)
 
     @property
@@ -116,52 +116,54 @@ def extract_name_features_training(name_input,labels,feature_map):
     mf1 =  feature_map.get(("MALE","F",first_letter),None)
     ff1 = feature_map.get(("FEMALE","F",first_letter),None)
 
-    if ("MALE","F",first_letter) in feature_map :
+    if mf1:
         labels["MALE"][mf1] = 1.0
 
-    if ("FEMALE","F",first_letter) in feature_map:
+    if ff1:
         labels["FEMALE"][ff1] = 1.0
 
 
     last_letter = raw_name[-1]
+
     mf2 = feature_map.get(("MALE","L",last_letter), None)
     ff2 = feature_map.get(("FEMALE","L",last_letter), None)
-    if ("MALE","L",last_letter) in feature_map:
+    if mf2:
         labels["MALE"][mf2] = 1.0
 
-    if ("FEMALE", "L", last_letter) in feature_map:
+    if ff2:
         labels["FEMALE"][ff2] = 1.0
 
     vowels = set(["a", "e", "i", "o", "u"])
     num_vowels = len([c for c in raw_name if c in vowels])
+
     mf3 = feature_map.get(("MALE","Vow",num_vowels), None)
     ff3 = feature_map.get(("FEMALE", "Vow", num_vowels), None)
 
-    if ("MALE","Vow",num_vowels) in feature_map:
+    if mf3:
         labels["MALE"][mf3] = num_vowels
 
-    if ("FEMALE", "Vow", num_vowels) in feature_map:
+    if ff3:
         labels["FEMALE"][ff3] = num_vowels
 
 
     last_three_letters = raw_name[-3:]
+
     mf4 = feature_map.get(("MALE", "End", last_three_letters), None)
     ff4 = feature_map.get(("FEMALE", "End", last_three_letters), None)
 
-    if ("MALE", "End", last_three_letters) in feature_map:
+    if mf4:
         labels["MALE"][mf4] = 1.0
 
-    if ("FEMALE", "End", last_three_letters) in feature_map:
+    if ff4:
         labels["FEMALE"][ff4] = 1.0
-
 
     mf5 = feature_map.get(("MALE", "NM", raw_name), None)
     ff5 = feature_map.get(("FEMALE", "NM", raw_name), None)
 
-    if ("MALE", "NM", raw_name) in feature_map:
+    if mf5:
         labels["MALE"][mf5] = 1.0
 
-    if ("FEMALE", "NM", raw_name) in feature_map:
+    if ff5:
         labels["FEMALE"][ff5] = 1.0
 
 
@@ -173,15 +175,36 @@ def extract_name_features_training(name_input,labels,feature_map):
         mf6 = feature_map.get(("MALE", "LT", letter_type), None)
         ff6 = feature_map.get(("FEMALE", "LT", letter_type), None)
 
-        if ("MALE", "L", letter_type) in feature_map:
-            labels["MALE"][mf6] = float(count)
+        if mf6:
+                labels["MALE"][mf6] = float(count)
 
-        if ("FEMALE", "LT", letter_type) in feature_map:
-            labels["FEMALE"][ff6] = float(count)
+        if ff6:
+                labels["FEMALE"][ff6] = float(count)
+
+    fl = raw_name[0]+raw_name[-1]
+
+    mf7 = feature_map.get(("MALE", "FL", fl), None)
+    ff7 = feature_map.get(("FEMALE", "FL", fl), None)
+
+    if mf7:
+       labels["MALE"][mf7] = 1.0
+
+    if ff7:
+        labels["FEMALE"][ff7] = 1.0
+
+    comb = str(num_vowels) + last_letter
+
+    mf8 = feature_map.get(("MALE", "LV", comb), None)
+    ff8 = feature_map.get(("FEMALE", "LV", comb), None)
+
+    if mf8:
+        labels["MALE"][mf8] = 1.0
+
+    if ff8:
+        labels["FEMALE"][ff8] = 1.0
 
 
-
-def find_name_features(dataset):
+def find_name_features(dataset,templates):
     """Find the different features in train data
 
     name input: Melanie 
@@ -210,58 +233,67 @@ def find_name_features(dataset):
     """
     features = {}
     vowels = set(["a","e","i","o","u"])
-
+    templates = [int(t) for t in templates.split("+")]
     
     for (text,label) in dataset:
 
-        ## feature template 1 : FIRST LETTER FEATURE
         first_letter = text[0]
-        identifier = (label,"F",first_letter)
+        if 1 in templates:
+            identifier = (label,"F",first_letter)
 
-        if identifier not in features:
-            features[identifier] = len(features)
+            if identifier not in features:
+                features[identifier] = len(features)
 
         ## features template 2 : LAST LETTER FEATURE
         last_letter = text[-1]
-        identifier = (label,"L",last_letter)
+        if 2 in templates:
+            identifier = (label,"L",last_letter)
 
-        if identifier not in features:
-            features[identifier] = len(features)
+            if identifier not in features:
+                features[identifier] = len(features)
 
 
         ## feature template 3:
         num_vowels = len([c for c in text if c in vowels])
-
-        """if num_vowels <= 0:
-            v_identifier = ("NV",)
-        if num_vowels >= 1:
-            v_identifier = (">=1",)
-        if num_vowels >= 5:
-            v_identifier = (">=5,",)
-
-        if v_identifier not in features: 
-            features[v_identifier] = len(features)"""
-        tv_identifier = (label,"Vow",num_vowels)
-        if tv_identifier not in features:
-            features[tv_identifier] = len(features)
+        if 3 in templates:
+            tv_identifier = (label,"Vow",num_vowels)
+            if tv_identifier not in features:
+                features[tv_identifier] = len(features)
 
         ## feature template 4:
         last_three_letters = text[-3:]
-        tl_identifier = (label,"End", last_three_letters)
-        if tl_identifier not in features:
-            features[tl_identifier] = len(features)
+        if 4 in templates:
+            tl_identifier = (label,"End", last_three_letters)
+            if tl_identifier not in features:
+                features[tl_identifier] = len(features)
 
         ## feature template 5:
-        nm_identifier = (label,"NM", text)
-        if nm_identifier not in features:
-            features[nm_identifier] = len(features)
+        if 5 in templates:
+            nm_identifier = (label,"NM", text)
+            if nm_identifier not in features:
+                    features[nm_identifier] = len(features)
 
         ## feature template 6:
         letters =  {c: text.count(c) for c in text}
-        for (letter_type, count) in letters.iteritems():
-            lt_identifier = (label,"LT",letter_type)
-            if lt_identifier not in features:
-                features[lt_identifier] = len(features)
+        if 6 in templates:
+            for (letter_type, count) in letters.iteritems():
+                lt_identifier = (label,"LT",letter_type)
+                if lt_identifier not in features:
+                    features[lt_identifier] = len(features)
+
+        ## feature template 7:
+        fandl = text[0] + text[-1]
+        if 7 in templates:
+            fl_identifier = (label, "FL", fandl)
+            if fl_identifier not in features:
+                features[fl_identifier] = len(features)
+
+        ## feature template 8:
+        volwlast = str(num_vowels) + last_letter
+        if 8 in templates:
+            lastv_identifier = (label, "LV", volwlast)
+            if lastv_identifier not in features:
+                features[lastv_identifier] = len(features)
 
     return features
         
@@ -286,7 +318,7 @@ def params(config):
     )
 
     group.add_option(
-        "--templates",dest="templates",default="",
+        "--templates",dest="templates",default="1+2+3+4+5",
         help="The type of templates to use [default='']"
     )
 
