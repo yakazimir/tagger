@@ -83,13 +83,6 @@ class PerceptronLearner(LinearLearner):
             self.weights[feature_num] +=\
                 features[gold].get(feature_num,0.0) - features[prediction].get(feature_num,0.0)
 
-    def score_dataset(self,dataset):
-        """Take a dataset, score each example, and return score
-
-        :param dataset: the dataset to score
-        :returns: a numeric score
-        """
-        raise NotImplementedError
 
     def score(self,features):
         """Score a set of candidates 
@@ -122,19 +115,43 @@ class PerceptronLearner(LinearLearner):
 class MajorityLearner(LinearLearner):
     """A majority learner class"""
 
-    def update(self,features):
+    def __init__(self,weights):
+        self.weights = {} ## we dont need this, but for design purposes well keep it
+        self.labels_seen = {}
+
+    def update(self,features,prediction,gold):
         """Perform online update during training 
 
-        :param features: the target features 
+        :param features: the target features
+        :param prediction: what the system thinks
+        :param gold: the actual real world value
         """
-        raise NotImplementedError
+        if gold not in self.labels_seen:
+            self.labels_seen[gold] = 0.0
+        self.labels_seen[gold] += 1.0
 
     def score(self,features):
         """Score an input feature representation 
 
         :param features: the features to score 
         """
-        raise NotImplementedError
+        if not self.labels_seen:
+            return False
+        return max(self.labels_seen, key=self.labels_seen.get)
+
+
+    @classmethod
+    def from_features(cls,feature_map):
+        """Loads a model from an existing list of features
+
+        :param feature_map: the feature list
+        :returns: a PerceptronInstance
+        """
+        ## initialize all weights to zero
+        weights = {}
+        model = cls(weights)
+        return model
+
 
 class HeuristicLearner(LinearLearner):
     """A Learner that uses a single or few heuristic to learn"""
@@ -156,7 +173,8 @@ class HeuristicLearner(LinearLearner):
 ### Factory method
 
 LEARNERS = {
-    "perceptron" : PerceptronLearner
+    "perceptron" : PerceptronLearner,
+    "majority"   : MajorityLearner,
 }
 
 def Learner(ltype):

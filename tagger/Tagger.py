@@ -46,7 +46,8 @@ class SimpleTagger(TaggerBase):
         :rtype: None 
         """
         dataset = setup_dataset(config,'train')
-        self.optimizer.optimize(dataset)
+        validation_data = setup_dataset(config,"valid")
+        self.optimizer.optimize(dataset,validation_data)
 
     def test(self,config):
         """Test the tagger model 

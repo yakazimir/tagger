@@ -50,6 +50,8 @@ class OnlineOptimizer(OptimizerBase):
         :param validation: a validation dataset 
         :type validation: None or subclass of DatasetBase
         """
+        last_update = 0
+        last_accuracy = 0.
         ## start a new iteration 
         for epoch in range(self.iterations):
             
@@ -74,11 +76,26 @@ class OnlineOptimizer(OptimizerBase):
                                  (epoch,time.time()-start_time))
 
             ## end of the iteration j
-            #test_on_validation(validation)
+            if validation:
+                dev_average = self.test(validation)
+                self.logger.info('Accuracy of development set after %d iterations: %f' % (epoch,dev_average))
+
+                if dev_average > last_accuracy:
+                    last_update = epoch
+                    last_accuracy = dev_average
+                elif (epoch - last_update) >= 10:
+                    break
 
         ## test of the training data
-        self.test(dataset)
+        ##########
+
+        average = self.test(dataset)
+        self.logger.info('Accuracy on training: %f' % average)
         ## test model (train, valid)
+
+
+    def test_dataset(self,dataset):
+        pass
 
     def test(self,dataset):
         """Test the model of some data
@@ -86,7 +103,21 @@ class OnlineOptimizer(OptimizerBase):
         :param dataset: the dataset to test the model on 
         :type dataset: subclass of DatasetBase 
         """
-        accuracy = self.model.score_dataset(dataset)
+
+        correct = 0.0
+        incorrect = 0.0
+        for data_instance in dataset:
+            raw, gold = data_instance
+            features = self.extractor.extract(data_instance)
+            prediction = self.model.score(features)
+            if prediction == gold:
+                correct += 1.0
+
+            else:
+                incorrect += 1.0
+
+        return correct / (correct + incorrect)
+
 
     @classmethod
     def from_config(cls,config):
