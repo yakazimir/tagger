@@ -73,13 +73,20 @@ class OnlineOptimizer(OptimizerBase):
             self.logger.info('Finished iteration %d in %s seconds' %\
                                  (epoch,time.time()-start_time))
 
+            ## end of the iteration j
+            #test_on_validation(validation)
+
+        ## test of the training data
+        self.test(dataset)
+        ## test model (train, valid)
+
     def test(self,dataset):
         """Test the model of some data
 
         :param dataset: the dataset to test the model on 
         :type dataset: subclass of DatasetBase 
         """
-        raise NotImplementedError('Optimizer test not implemented yet!')
+        accuracy = self.model.score_dataset(dataset)
 
     @classmethod
     def from_config(cls,config):

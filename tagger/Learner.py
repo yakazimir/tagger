@@ -83,6 +83,14 @@ class PerceptronLearner(LinearLearner):
             self.weights[feature_num] +=\
                 features[gold].get(feature_num,0.0) - features[prediction].get(feature_num,0.0)
 
+    def score_dataset(self,dataset):
+        """Take a dataset, score each example, and return score
+
+        :param dataset: the dataset to score
+        :returns: a numeric score
+        """
+        raise NotImplementedError
+
     def score(self,features):
         """Score a set of candidates 
 
