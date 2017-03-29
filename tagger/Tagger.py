@@ -54,7 +54,11 @@ class SimpleTagger(TaggerBase):
 
         :param config: the overall tagger configuration
         """
-        pass
+        dataset = setup_dataset(config,'test')
+        self.logger.info('Testing the model on testing data...')
+
+        test_score = self.optimizer.test(dataset)
+        ### print this somewhere, log it
 
     @classmethod
     def from_config(cls,config):
@@ -107,7 +111,13 @@ def run_tagger(config):
             ## create a tagger instance 
             tagger = tagger_class.from_config(config)
             ## train it
+            #self.logger.info('Training the tagging model...')
             tagger.train(config)
+
+            ## test the data ?
+            if config.evaluate_test:
+                #self.logger.info('Testing on test data (be careful!)..')
+                tagger.test(config)
 
         elif desired_action == 'test_tagger':
             raise NotImplementedError('TESTER: Implement me!!')
