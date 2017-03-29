@@ -47,8 +47,30 @@ class LinearLearner(LearnerBase):
         """
         raise ValueError('Use from_features, config init not supported')
 
+    def after_iteration(self):
+        pass
 
-class AveragePerceptronLearner(LinearLearner):
+    def after_experiment(self):
+        pass
+
+class PerceptronBase(LinearLearner):
+
+    def score(self,features):
+        """Score a set of candidates
+
+                :param features: the input features
+                :returns: label name with highest score
+                """
+        label_scores = {label: 0.0 for label in features.keys()}
+
+        for (label, label_features) in features.iteritems():
+            for (feature_id, feature_count) in label_features.iteritems():
+                label_scores[label] += feature_count * self.weights[feature_id]
+
+        return max(label_scores, key=label_scores.get)
+
+
+class AveragePerceptronLearner(PerceptronBase):
 
     def __init__(self,weights):
         """Create a perceptron learner instance
@@ -56,7 +78,7 @@ class AveragePerceptronLearner(LinearLearner):
            :param weights: weights associated with features
            """
         self.weights = weights
-        self.last_updates = {k:-1 for k,_ in enumerate(self.weights)}
+        self.last_update = {k:-1 for k,_ in enumerate(self.weights)}
         self.sums = {k:0 for k,_ in enumerate(self.weights)}
         self.number_of_updates = 0
 
@@ -75,12 +97,44 @@ class AveragePerceptronLearner(LinearLearner):
         for feature_num in totalfeatures:
             self.weights[feature_num] +=\
                 features[gold].get(feature_num,0.0) - features[prediction].get(feature_num,0.0)
-            self.sums[feature_num] += features[feature_num]
+            self.sums[feature_num] += self.weights[feature_num]
             self.number_of_updates += 1.
 
-    def score(self):
-        pass
 
+            ## do something here, but not what you have
+            gap = self.number_of_updates - self.last_update[feature_num]
+            if gap > 1:
+                self.sums[feature_num] += self.weights[feature_num] * float(gap-1)
+
+            ## finally
+            self.last_update[feature_num] = self.number_of_updates
+
+
+
+
+
+    def after_iteration(self):
+        """Document me!"""
+        self.logger.info('Updating the averages...')
+
+        for featureid in range(len(self.weights)):
+            gap = self.number_of_updates - self.last_update[featureid]
+            if gap > 1:
+                self.sums[featureid] += self.weights[featureid] * float(gap - 1)
+            self.last_update[featureid] = self.number_of_updates
+
+    def after_experiment(self):
+
+        self.logger.info("Computing the averaged vector...")
+        new_weights = [0.0 for i in range(len(self.weights))]
+
+        for featureid in range(len(self.weights)):
+            average = self.sums[featureid]/self.number_of_updates
+            new_weights[featureid] = average
+
+        # replace old weight vector weith new_weights
+        self.weights = new_weights
+        self.logger.info("Replaced the old model with averaged model")
 
     @classmethod
     def from_features(cls, feature_map):
@@ -95,7 +149,7 @@ class AveragePerceptronLearner(LinearLearner):
         return model
 
 
-class PerceptronLearner(LinearLearner):
+class PerceptronLearner(PerceptronBase):
     
     """Implementation of the perceptron learner"""
 
@@ -130,20 +184,6 @@ class PerceptronLearner(LinearLearner):
             self.weights[feature_num] +=\
                 features[gold].get(feature_num,0.0) - features[prediction].get(feature_num,0.0)
 
-
-    def score(self,features):
-        """Score a set of candidates 
-
-        :param features: the input features
-        :returns: label name with highest score
-        """
-        label_scores = {label:0.0 for label in features.keys()}
-
-        for (label,label_features) in features.iteritems():
-            for (feature_id,feature_count) in label_features.iteritems():
-                label_scores[label] += feature_count*self.weights[feature_id]
-
-        return max(label_scores, key=label_scores.get)
 
     @classmethod
     def from_features(cls,feature_map):
@@ -208,20 +248,21 @@ class HeuristicLearner(LinearLearner):
 
         :param features: the target features 
         """
-        raise NotImplementedError
+        pass
 
     def score(self,features):
         """Score an input feature representation 
 
         :param features 
         """
-        raise NotImplementedError
+        pass
 
 ### Factory method
 
 LEARNERS = {
     "perceptron" : PerceptronLearner,
     "majority"   : MajorityLearner,
+    "aperceptron": AveragePerceptronLearner,
 }
 
 def Learner(ltype):

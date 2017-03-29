@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from optparse import OptionParser,OptionGroup
 from BaseClass import TaggerSerializable
 
@@ -66,7 +68,7 @@ class NameFeatureExtractor(FeatureExtractor):
         :param dataset: the dataset to extract features from
         """
         #### IMPLEMENT HERE
-        feature_map = find_name_features(dataset,config.templates)
+        feature_map = find_name_features(dataset,config.templates,config.language)
         return cls(feature_map)
 
     @property
@@ -76,6 +78,25 @@ class NameFeatureExtractor(FeatureExtractor):
         :rtype: ine
         """
         return len(self.feature_map)
+
+class RussianHeuristicExtractor():
+    def extract(self):
+        """ """
+        labels = {"MALE": 1, "FEMALE": 0}
+        return labels
+
+    @classmethod
+    def init_features(cls, config, dataset):
+        """Create class instance and init features from dataset
+
+        :param config: the configuration
+        :param dataset: the dataset to extract features from
+        """
+        #### IMPLEMENT HERE
+        for (text, label) in dataset:
+            if text[-1] == u"а":
+                labels["FEMALE"]+=
+        return cls(feature_map)
 
 ## types
 
@@ -203,8 +224,53 @@ def extract_name_features_training(name_input,labels,feature_map):
     if ff8:
         labels["FEMALE"][ff8] = 1.0
 
+    num = len(raw_name)
+    mf9 = feature_map.get(("MALE", "Nu", num), None)
+    ff9 = feature_map.get(("FEMALE", "Nu", num), None)
 
-def find_name_features(dataset,templates):
+    if mf9:
+        labels["MALE"][mf9] = 1.0
+
+    if ff9:
+        labels["FEMALE"][ff9] = 1.0
+
+    if num > 6:
+        k_n = ">6"
+    if num <= 6:
+       k_n = "<=6"
+    elif num <= 3:
+        k_n = "<=3"
+
+    mf10 = feature_map.get(("MALE", "Bn", k_n), None)
+    ff10 = feature_map.get(("FEMALE", "Bn", k_n), None)
+
+    if mf10:
+        labels["MALE"][mf10] = 1.0
+
+    if ff10:
+        labels["FEMALE"][ff10] = 1.0
+
+    if num_vowels > 3:
+        v_n = ">3"
+    if num_vowels <= 3:
+       v_n = "<=3"
+    elif num_vowels <= 1:
+        v_n = "<=1"
+
+    mf11 = feature_map.get(("MALE", "Vn", v_n), None)
+    ff11 = feature_map.get(("FEMALE", "Vn", v_n), None)
+
+    if mf11:
+        labels["MALE"][mf11] = 1.0
+
+    if ff11:
+        labels["FEMALE"][ff11] = 1.0
+
+
+
+
+
+def find_name_features(dataset,templates,language):
     """Find the different features in train data
 
     name input: Melanie 
@@ -232,7 +298,10 @@ def find_name_features(dataset,templates):
     :returns: a map of features with values
     """
     features = {}
-    vowels = set(["a","e","i","o","u"])
+    if language == "en":
+        vowels = set(["a","e","i","o","u"])
+    else:
+        vowels = set([u"а", u"е", u"и", u"о", u"у"])
     templates = [int(t) for t in templates.split("+")]
     
     for (text,label) in dataset:
@@ -295,6 +364,35 @@ def find_name_features(dataset,templates):
             if lastv_identifier not in features:
                 features[lastv_identifier] = len(features)
 
+        ## feature template 9:
+        number = len(text)
+        if 9 in templates:
+            nu_identifier = (label, "Nu", number)
+            if nu_identifier not in features:
+                features[nu_identifier] = len(features)
+
+        ##
+        if 10 in templates:
+            if number >6:
+                b_n_identifier = (label, "Bn", ">6")
+            if number <= 6:
+                b_n_identifier = (label, "Bn", "<=6")
+            elif number <= 3:
+                b_n_identifier = (label, "Bn", "<=3")
+
+            if b_n_identifier not in features:
+                features[b_n_identifier] = len(features)
+
+        if 11 in templates:
+            if num_vowels >3:
+                v_n_identifier = (label, "Vn", ">3")
+            if num_vowels <= 3:
+                v_n_identifier = (label, "Vn", "<=3")
+            elif num_vowels <= 1:
+                v_n_identifier = (label, "Vn", "<=1")
+
+            if v_n_identifier not in features:
+                features[v_n_identifier] = len(features)
     return features
         
 
@@ -320,6 +418,10 @@ def params(config):
     group.add_option(
         "--templates",dest="templates",default="1+2+3+4+5",
         help="The type of templates to use [default='']"
+    )
+    group.add_option(
+        "--language", dest="language", default="en",
+        help="The language to use [default='en']"
     )
 
     config.add_option_group(group)

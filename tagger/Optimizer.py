@@ -80,6 +80,8 @@ class OnlineOptimizer(OptimizerBase):
             self.logger.info('Finished iteration %d in %s seconds' %\
                                  (epoch,time.time()-start_time))
 
+            self.model.after_iteration()
+
             ## end of the iteration j
             if validation:
                 dev_average = self.test(validation)
@@ -97,10 +99,15 @@ class OnlineOptimizer(OptimizerBase):
 
         ## test of the training data
         ##########
+
+
+
         if best_model:
             self.model.weights = best_model
         if not last_iteration: last_iteration = epoch
 
+
+        self.model.after_experiment()
         average = self.test(dataset)
         self.logger.info('Accuracy on training: %f' % average)
         ## test model (train, valid)
