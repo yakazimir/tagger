@@ -79,11 +79,25 @@ class NameFeatureExtractor(FeatureExtractor):
         """
         return len(self.feature_map)
 
-class RussianHeuristicExtractor():
-    def extract(self):
+class RussianHeuristicExtractor(FeatureExtractor):
+
+    def __init__(self,feature_map):
+        """Ceates a NameFeatureExtractor instance
+
+        :param features: Feature map for mapping features types to identifiers
+        """
+        self.feature_map = feature_map
+
+    def extract(self, data_instance):
         """ """
-        labels = {"MALE": 1, "FEMALE": 0}
-        return labels
+        """labels = {"MALE": 1, "FEMALE": 0}
+        return labels"""
+        raw,label = data_instance
+
+        if raw[-1] == u"а" or raw[-1] == u"я":
+            return "FEMALE"
+        else:
+            return "MALE"
 
     @classmethod
     def init_features(cls, config, dataset):
@@ -92,16 +106,21 @@ class RussianHeuristicExtractor():
         :param config: the configuration
         :param dataset: the dataset to extract features from
         """
-        #### IMPLEMENT HERE
-        for (text, label) in dataset:
+        return cls({})
+        """"#### IMPLEMENT HERE
+        endings = {k: -1 for k, _ in enumerate(dataset)}
+        for (text,_) in dataset:
             if text[-1] == u"а":
-                labels["FEMALE"]+=
-        return cls(feature_map)
+                endings[text] = 0
+            else:
+                endings[text] = 1
+        return cls(endings)"""
 
 ## types
 
 EXTRACTORS = {
-    "names" : NameFeatureExtractor,
+    "names"       : NameFeatureExtractor,
+    "ru_baseline" : RussianHeuristicExtractor,
 }
 
 def Extractor(etype):

@@ -57,6 +57,7 @@ class OnlineOptimizer(OptimizerBase):
         last_iteration = None
         last_accuracy = 0.
         best_model = None
+
         ## start a new iteration 
         for epoch in range(self.iterations):
             
@@ -132,6 +133,7 @@ class OnlineOptimizer(OptimizerBase):
             raw, gold = data_instance
             features = self.extractor.extract(data_instance)
             prediction = self.model.score(features)
+
             if prediction == gold:
                 correct += 1.0
 

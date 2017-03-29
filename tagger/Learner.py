@@ -243,7 +243,10 @@ class MajorityLearner(LinearLearner):
 class HeuristicLearner(LinearLearner):
     """A Learner that uses a single or few heuristic to learn"""
 
-    def update(self,features):
+    def __init__(self, weights):
+        self.weights = {}
+
+    def update(self,features,prediction,gold):
         """Perform online update during training 
 
         :param features: the target features 
@@ -255,7 +258,11 @@ class HeuristicLearner(LinearLearner):
 
         :param features 
         """
-        pass
+        return features
+
+    @classmethod
+    def from_features(cls,feature_map):
+        return cls(None)
 
 ### Factory method
 
@@ -263,6 +270,7 @@ LEARNERS = {
     "perceptron" : PerceptronLearner,
     "majority"   : MajorityLearner,
     "aperceptron": AveragePerceptronLearner,
+    "ru_heuristic":HeuristicLearner,
 }
 
 def Learner(ltype):
