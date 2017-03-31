@@ -89,7 +89,7 @@ def create_run_script(argv,config):
     subprocess.call(['chmod', '755', run_path])
 
 
-def print_train_info(train_accuracy,dev_accuracy,wdir,last):
+def print_train_info(train_accuracy,dev_accuracy,wdir,last,new_validation):
     """Print information about the training after it is done
 
 
@@ -103,7 +103,7 @@ def print_train_info(train_accuracy,dev_accuracy,wdir,last):
     with open(info_file_path,'w') as info:
         print >>info, "NUMBER OF ITERATIONS: %d" % last
         print >>info, "ACCURACY ON TRAIN SET: %f" % train_accuracy
-        print >>info, "ACCURACY ON DEV: %f" % dev_accuracy
+        print >>info, "ACCURACY ON DEV: %f" % new_validation
 
 
 

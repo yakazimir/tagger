@@ -111,11 +111,13 @@ class OnlineOptimizer(OptimizerBase):
         self.model.after_experiment()
         average = self.test(dataset)
         self.logger.info('Accuracy on training: %f' % average)
-        ## test model (train, valid)
+
+        #test model again on validation with averaged vector
+        new_validation_average = self.test(validation)
+        self.logger.info('Final accuracy on validation: %f' % new_validation_average)
 
         if wdir:
-            print_train_info(average,last_accuracy,wdir,last_iteration)
-
+            print_train_info(average,last_accuracy,wdir,last_iteration,new_validation_average)
 
     def test_dataset(self,dataset):
         pass

@@ -321,7 +321,9 @@ def find_name_features(dataset,templates,language):
         vowels = set(["a","e","i","o","u"])
     else:
         vowels = set([u"а", u"е", u"и", u"о", u"у"])
-    templates = [int(t) for t in templates.split("+")]
+
+    print "input templates=%s" % str(templates)
+    templates = [int(t) for t in templates.split("+") if t.strip()]
     
     for (text,label) in dataset:
 

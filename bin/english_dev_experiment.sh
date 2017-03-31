@@ -1,4 +1,15 @@
 experiment_number=0
+"""comb(){
+    if [all_features == None]; then
+    return None;
+    else
+    if features == None; then
+    return comb all
+    fi
+
+}"""
+
+
 
 for language in en ru;
 do
