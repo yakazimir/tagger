@@ -37,7 +37,7 @@ while (( ! binary[11] )) ; do
 
                 if [ "$combination" != "" ] ; then
                     echo $combination
-                    #./run.sh --loc $loc --dir $wdir --iters 100 --learner $learner --override=true --templates "$combination" --language $language
+                    ./run.sh --loc $loc --dir $wdir --iters 100 --learner $learner --override=true --templates "$combination" --language $language
                     echo "finished experiment: " $experiment_number
                     experiment_number=$((experiment_number + 1))
                 fi

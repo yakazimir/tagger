@@ -1,0 +1,54 @@
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 0 in 0.127664089203 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 0 iterations: 0.725934
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 1 in 0.122749090195 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 1 iterations: 0.756512
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 2 in 0.127372980118 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 2 iterations: 0.722537
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 3 in 0.12370800972 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 3 iterations: 0.748584
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 4 in 0.121245145798 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 4 iterations: 0.731597
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 5 in 0.129764080048 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 5 iterations: 0.678369
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 6 in 0.12368106842 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 6 iterations: 0.745187
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 7 in 0.14358496666 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 7 iterations: 0.763307
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 8 in 0.12422990799 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 8 iterations: 0.763307
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 9 in 0.134007930756 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 9 iterations: 0.718007
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 10 in 0.12558889389 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 10 iterations: 0.748584
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 11 in 0.127763032913 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 11 iterations: 0.741789
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 12 in 0.120470046997 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 12 iterations: 0.755379
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 13 in 0.127314805984 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 13 iterations: 0.756512
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 14 in 0.128350019455 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 14 iterations: 0.764439
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 15 in 0.128750085831 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 15 iterations: 0.749717
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 16 in 0.137852907181 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 16 iterations: 0.758777
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 17 in 0.125010967255 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 17 iterations: 0.754247
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 18 in 0.128805875778 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 18 iterations: 0.734994
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 19 in 0.124768018723 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 19 iterations: 0.732729
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 20 in 0.12131690979 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 20 iterations: 0.728199
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 21 in 0.126633882523 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 21 iterations: 0.762174
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 22 in 0.122661113739 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 22 iterations: 0.728199
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 23 in 0.12174987793 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 23 iterations: 0.762174
+INFO:tagger.BaseClass.OnlineOptimizer:Finished iteration 24 in 0.120419025421 seconds
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy of development set after 24 iterations: 0.721404
+INFO:tagger.BaseClass.OnlineOptimizer:Stopped early: current=0.721404, last prev. best=0.764439
+INFO:tagger.BaseClass.OnlineOptimizer:Accuracy on training: 0.791019
+INFO:tagger.BaseClass.OnlineOptimizer:Final accuracy on validation: 0.764439
+INFO:tagger.BaseClass.SimpleTagger:Pickling the instance...

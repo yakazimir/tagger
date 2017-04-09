@@ -27,7 +27,7 @@ do
                 if [ $language == "en" ]; then
                  loc=data/names/en
                  fi
-                ./run.sh --loc $loc --dir $wdir --iters 1000 --learner $learner --override=true --templates $features --language $language
+                #./run.sh --loc $loc --dir $wdir --iters 1000 --learner $learner --override=true --templates $features --language $language
                 echo "finished experiment: " $experiment_number
                 experiment_number=$((experiment_number + 1))
             done

@@ -38,6 +38,8 @@ if __name__ == "__main__":
                     train["en"][ex] = (float(train_d), float(text[0][22:]))
                     dev["en"][ex] = (float(dev_d), float(text[0][22:]))
     entop = sorted(dev["en"].items(), key=lambda z : z[-1][0], reverse=True)[:10]
+    print entop
+    exit()
     for (result,value) in entop:
         info = result[22:]
         combo = info.split("++")[0]
@@ -46,9 +48,7 @@ if __name__ == "__main__":
 
     print(features)
         #print (dev["en"])
-    feutures ={i:[None,None] for i in ["1","2", "3"]}
-
-    features_l = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "1+2", "1+2+3", "1+2+3+4", "1+2+3+4+5+6", "1+2+3+4+5+6+7", "1+2+3+4+5+6+7+8", "1+2+3+4+5+6+7+8+9", "1+2+3+4+5+6+7+8+9+10+11"]
+    #feutures ={i:[None,None] for i in ["1","2", "3"]}
     feutures = {i: [None, None] for i in features}
     print(features)
     for combination in features:
@@ -63,7 +63,7 @@ if __name__ == "__main__":
                 #print (features[combination])"""
 
             if combination + "++aperceptron" in infos:
-                print(infos)
+                print(combination + "++aperceptron:  " + infos)
                 features[combination][1] = dev["en"][infos][0]
                 #print (features)"""
         if features[combination][0]!= features[combination][1]:
