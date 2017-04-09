@@ -48,7 +48,7 @@ if __name__ == "__main__":
     train_indices = [indices[i] for i in range(0,num_train)]
     test_indices = [indices[i] for i in range(num_train,num_train+num_test)]
     valid_indices = [indices[i] for i in range(num_train+num_test,num_train+num_test+num_test)]
-
+    print(total_data)
 
     ## make the data
     ##################
@@ -64,8 +64,10 @@ if __name__ == "__main__":
         for tindex in train_indices:
             data_point = total_data[tindex]
             print >>train,"%s\t%s" % (data_point[0],data_point[1])
-            if data_point[1] == "MALE": train_stats["m"] += 1
-            else: train_stats["f"] += 1
+            if data_point[1] == "MALE":
+                train_stats["m"] += 1
+            else:
+                train_stats["f"] += 1
 
     vtotal = 0.0
     vcorrect = 0.0
