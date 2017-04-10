@@ -14,6 +14,7 @@ build
 eggs
 parts
 bin
+experiments
 var
 sdist
 develop-eggs
