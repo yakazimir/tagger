@@ -107,20 +107,49 @@ class RussianHeuristicExtractor(FeatureExtractor):
         :param dataset: the dataset to extract features from
         """
         return cls({})
-        """"#### IMPLEMENT HERE
-        endings = {k: -1 for k, _ in enumerate(dataset)}
-        for (text,_) in dataset:
-            if text[-1] == u"а":
-                endings[text] = 0
-            else:
-                endings[text] = 1
-        return cls(endings)"""
 
-## types
+
+class SentimentFeatureExtractor(FeatureExtractor):
+    """Feature extractor for getting name features and name classification"""
+
+    def __init__(self,feature_map):
+        """Ceates a NameFeatureExtractor instance
+
+        :param features: Feature map for mapping features types to identifiers
+        """
+        self.feature_map = feature_map
+
+    def extract(self,data_instance):
+        """Add later"""
+        labels = {"positiv": {}, "negativ": {}}
+
+        extract_sentiment_features_training(data_instance,labels,self.feature_map)
+        return labels
+
+
+    @classmethod
+    def init_features(cls,config,dataset):
+        """Create class instance and init features from dataset
+
+        :param config: the configuration
+        :param dataset: the dataset to extract features from
+        """
+        #### IMPLEMENT HERE
+        feature_map = find_sentiment_features(dataset,config.templates)
+        return cls(feature_map)
+
+    @property
+    def num_features(self):
+        """Information about the number of features
+
+        :rtype: ine
+        """
+        return len(self.feature_map)
 
 EXTRACTORS = {
     "names"       : NameFeatureExtractor,
     "ru_baseline" : RussianHeuristicExtractor,
+    "sentiments" : SentimentFeatureExtractor
 }
 
 def Extractor(etype):
@@ -155,7 +184,7 @@ def extract_name_features_training(name_input,labels,feature_map):
 
     mf1 =  feature_map.get(("MALE","F",first_letter),None)
     ff1 = feature_map.get(("FEMALE","F",first_letter),None)
-
+    #print("F:         %s"%feature_map)
     if mf1:
         labels["MALE"][mf1] = 1.0
 
@@ -286,8 +315,75 @@ def extract_name_features_training(name_input,labels,feature_map):
         labels["FEMALE"][ff11] = 1.0
 
 
+def extract_sentiment_features_training(text_input,labels,feature_map):
+    """Extract features for names used for training or predicting
+
+    :param text_input: the text which you want to extract features for
+    :param labels: the two outputs
+    """
+    text,_ = text_input
+    words = text.split(" ")
+    az = 0
+    cs = 0  # capitalized words for feature 3
+    last_word = ""
+    for word in words:
+        if word == "!":
+            az += 1 # number of ! for next feature
+        c = 1 # the word is capitalized
+        for letter in list(word):
+            if not letter.isupper():
+                c=0
+            #print("!")
+        cs += c
+
+        pf1 = feature_map.get(("positiv", "W", word), None) # positive feature 1
+        nf1 = feature_map.get(("negativ", "W", word), None) # negative feature 1
+
+        if last_word != "":
+            pf5 = feature_map.get(("positiv", "Paar", last_word + " " + word), None)  # positive feature 1
+            nf5 = feature_map.get(("negativ", "Paar", last_word + " " + word), None)  # negative feature 1
+
+            if pf5:
+                labels["positiv"][pf5] = 1.0
+
+            if nf5:
+                labels["negativ"][nf5] = 1.0
+        last_word = word
+
+    if pf1:
+        labels["positiv"][pf1] = 1.0
+
+    if nf1:
+        labels["negativ"][nf1] = 1.0
+        #print("AAAA")
+
+    pf2 = feature_map.get(("positiv", "!", az), None)  # positive feature 2: number of exclamation points
+    nf2 = feature_map.get(("negativ", "!", az), None)
 
 
+    if pf2:
+        labels["positiv"][pf2] = 1.0
+
+    if nf2:
+        labels["negativ"][nf2] = 1.0
+
+    pf3 = feature_map.get(("positiv", "Cap", cs), None)  # positive feature 3: capitilized words
+    nf3 = feature_map.get(("negativ", "Cap", cs), None)
+
+    if pf3:
+        labels["positiv"][pf3] = 1.0
+
+    if nf3:
+        labels["negativ"][nf3] = 1.0
+
+    pf4 = feature_map.get(("positiv", "Len", len(text)), None)  # positive feature 3: capitilized words
+    nf4 = feature_map.get(("negativ", "Len", len(text)), None)
+
+    if pf4:
+        labels["positiv"][pf4] = 1.0
+
+    if nf4:
+        labels["negativ"][nf4] = 1.0
 
 def find_name_features(dataset,templates,language):
     """Find the different features in train data
@@ -302,7 +398,7 @@ def find_name_features(dataset,templates,language):
 
     features = {
 
-    ("F",'m') => 0 
+    ("F",'m') => 0
     ("F",'z') => 1
     .....
 
@@ -415,8 +511,64 @@ def find_name_features(dataset,templates,language):
             if v_n_identifier not in features:
                 features[v_n_identifier] = len(features)
     return features
-        
 
+
+def find_sentiment_features(dataset, templates):
+    """Find the different features in train data
+
+    :param dataset: the training dataset
+    :rtype: dict
+    :returns: a map of features with values
+    """
+    features = {}
+    templates = [int(t) for t in templates.split("+") if t.strip()]
+    for (text,label) in dataset:
+        caps = 0 ## capitalized words
+        az = 0
+        l_word = ""
+        words = text.split(" ")
+
+        for word in words:
+            cap = 1      # word is capitalized
+            for letter in list(word):
+                if not letter.isupper():
+                    cap = 0
+            caps += cap
+
+            if word == "!":
+                az += 1
+            if 1 in templates:
+                w_identifier = (label,"W",word)
+
+                if w_identifier not in features:
+                    features[w_identifier] = len(features)
+
+            if l_word != "":
+                if 5 in templates:
+                    paar_identifier = (label, "Paar", l_word + " "+word)
+
+                    if paar_identifier not in features:
+                        features[paar_identifier] = len(features) # ??????
+
+            l_word = word
+
+        if 2 in templates: #not important
+            az_identifier = (label, "!", az)
+            if az_identifier not in features:
+                features[az_identifier] = len(features)
+
+        if 3 in templates: #not important
+            caps_identifier = (label, "Cap", caps)
+            if caps_identifier not in features:
+                features[caps_identifier] = len(features)
+
+        if 4 in templates:
+            len_identifier = (label, "Len", len(text))
+            if len_identifier not in features:
+                features[len_identifier] = len(features)
+
+
+    return features
 
 def extract_name_features(instance):
     pass
@@ -432,7 +584,7 @@ def params(config):
     group = OptionGroup(config,"tagger.Feature","Feature Extractor Settings")
 
     group.add_option(
-        "--extractor",dest="extractor",default="names",
+        "--extractor",dest="extractor",default="sentiments",
         help="The type of feature extractor to use [default='']"
     )
 

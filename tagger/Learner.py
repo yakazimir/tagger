@@ -83,7 +83,6 @@ class AveragePerceptronLearner(PerceptronBase):
         self.number_of_updates = 0
 
     def update(self,features,prediction,gold):
-
         if prediction == gold:
             return
 
@@ -193,6 +192,8 @@ class PerceptronLearner(PerceptronBase):
         :returns: a PerceptronInstance 
         """
         ## initialize all weights to zero
+        if (not feature_map):
+            print("WRONG")
         weights = {i:0.0 for i in feature_map.values()}
         model = cls(weights)
         return model

@@ -45,7 +45,7 @@ def build_text_data(config,dtype):
         for k,line in enumerate(my_data):
             line = line.strip()
 
-            try: 
+            try:
                 name,label = line.split('\t')
                 text.append(name.strip())
                 labels.append(label)
@@ -103,7 +103,8 @@ def print_train_info(train_accuracy,dev_accuracy,wdir,last,new_validation):
     with open(info_file_path,'w') as info:
         print >>info, "NUMBER OF ITERATIONS: %d" % last
         print >>info, "ACCURACY ON TRAIN SET: %f" % train_accuracy
-        print >>info, "ACCURACY ON DEV: %f" % new_validation
+        print >>info, "ACCURACY ON DEV: %f" % dev_accuracy
+        #print >>info, "AVERAGED ACCURACY ON DEV: %f" % "]
 
 
 

@@ -19,14 +19,17 @@ if __name__ == "__main__":
     with codecs.open(males,encoding='utf-8') as male_names:
         for line in male_names:
             line = line.strip()
-            if re.search(r'^\#',line): continue
+            if line=="":
+                print("AAAAAA")
+            print (line)
+            if re.search(r'^\#',line) or (line==""): continue
             mnames.add(line)
 
     ## female names 
     with codecs.open(females,encoding='utf-8') as female_names:
         for line in female_names:
             line = line.strip()
-            if re.search(r'^\#',line): continue
+            if re.search(r'^\#',line) or (line==""): continue
             fnames.add(line)
 
     filter1 = [name for name in fnames if name not in mnames]
@@ -48,7 +51,7 @@ if __name__ == "__main__":
     train_indices = [indices[i] for i in range(0,num_train)]
     test_indices = [indices[i] for i in range(num_train,num_train+num_test)]
     valid_indices = [indices[i] for i in range(num_train+num_test,num_train+num_test+num_test)]
-    print(total_data)
+
 
     ## make the data
     ##################
@@ -63,7 +66,9 @@ if __name__ == "__main__":
     with codecs.open(train_data,'w',encoding='utf-8') as train:
         for tindex in train_indices:
             data_point = total_data[tindex]
+            #print (data_point[0])
             print >>train,"%s\t%s" % (data_point[0],data_point[1])
+            #print ("%s\t%s" % (data_point[0],data_point[1]))
             if data_point[1] == "MALE":
                 train_stats["m"] += 1
             else:
