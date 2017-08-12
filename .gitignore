@@ -3,6 +3,10 @@
 ### Python ###
 *.py[cod]
 
+
+## mac stuff 
+*.DS_Store*
+
 # C extensions
 *.so
 
