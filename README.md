@@ -3,8 +3,6 @@ Tagger
 
 A small tagger and classification library for instructional purposes 
 
-this is from a different computer
-
 Quick Start 
 -----------------
 
@@ -18,5 +16,3 @@ Data
 
 Data is included in the data/type_of_data.
 
-
-This is a commit
